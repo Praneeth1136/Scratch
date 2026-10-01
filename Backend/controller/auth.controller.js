@@ -34,3 +34,39 @@ export async function register(req,res){
     })
 
 }
+
+
+export async function login(req,res){
+    const{email,password} = req.body;
+
+    const user = await userModel.findOne({email});
+
+    if(!user){
+        return res.status(404).json({
+            message:"User doesn't exist",
+        })
+    }
+
+    const isPasswordMatch = await user.validatePasswords(password);
+
+    if(!isPasswordMatch){
+        return res.status(400).json({
+            message:"Password does'nt match"
+        })
+    }
+
+    const token = await user.getJWT();
+    res.cookie("token",token,{
+        httpOnly:true,
+        secure:true,
+    })
+    return res.status(200).json({
+        message: "Login successful",
+        success: true,
+        token,
+        user: {
+            id: user._id,
+            email: user.email,
+        },
+    });
+}

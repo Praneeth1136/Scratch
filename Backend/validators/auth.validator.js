@@ -15,8 +15,14 @@ export const validateSignUp = (req,res,next)=>{
     next();
 }
 
-// export const validateLogin = (req)=>{
-//     const {email,password} = req.body;
+export const validateLogin = (req,res,next)=>{
+    const {email,password} = req.body;
 
-    
-// }
+    if(!email || !validator.isEmail(email)){
+        return res.status(400).json({message:"Please enter a valid email address"});
+    }
+    if(!password || !validator.isStrongPassword(password)){
+        return res.status(400).json({message:"Please enter a strong password"});
+    }
+    next();  
+}
