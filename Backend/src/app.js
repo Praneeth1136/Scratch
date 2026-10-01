@@ -1,9 +1,13 @@
 import express from "express";
+import morgan from "morgan";
 import todoModel from "../models/todo.model.js";
 import chatModel from "../models/chat.model.js";
+import authRouter from "../routers/auth.routes.js"
+
 
 const app = express();
 app.use(express.json());
+app.use(morgan('dev'));
 
 app.get("/",(req,res)=>{
     res.json({message:"App is running"})
@@ -76,5 +80,9 @@ app.post("/user",async(req,res)=>{
         res.status(500).json({error:err.message});
     }
 })
+
+
+
+app.use("/api/auth",authRouter)
 
 export default app;
